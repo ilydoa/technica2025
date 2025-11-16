@@ -2,15 +2,11 @@ import { ScrollView, StyleSheet, View, Pressable, Button, TextInput, Text } from
 import { useState } from 'react';
 import { ThemedText } from '@/components/themed-text';
 import { Fonts } from '@/constants/theme';
+import { Picker } from '@react-native-picker/picker';
 
 export default function TabTwoScreen() {
-  const [boxes, setBoxes] = useState<string[]>([
-  'Apples',
-  'Bananas',
-  'Milk',
-  'Bread',
-  ]);
-  const [inputText, setInputText] = useState('');  
+  const [boxes, setBoxes] = useState<string[]>(['Apples', 'Bananas', 'Milk', 'Bread']);
+  const [selectedItem, setSelectedItem] = useState<string>('Apples');  
   const [showInput, setShowInput] = useState(false);
 
   const removeBox = (index: number) => {
@@ -18,12 +14,13 @@ export default function TabTwoScreen() {
   };
 
   const addBox = () => {
-    if (inputText.trim() !== '') {
-      setBoxes((prev) => [...prev, inputText.trim()]);
-      setInputText('');    
+    if (selectedItem) {
+      setBoxes((prev) => [...prev, selectedItem]);
       setShowInput(false);
     }
   };
+
+  const foodOptions = ['Apples', 'Bananas', 'Milk', 'Bread', 'Carrot', 'Potato', 'Swiss Cheese', 'Tortilla', 'Eggs'];
 
   return (
     <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
@@ -55,18 +52,22 @@ export default function TabTwoScreen() {
       
       {showInput && (
         <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter item name"
-            value={inputText}
-            onChangeText={setInputText}
-          />
-          <View style={styles.addButtonContainer}>
-            <Button title="Add" onPress={addBox} color="#104911" />
-          </View>
+          <Picker
+            selectedValue={selectedItem}
+            style={styles.picker}
+            itemStyle={{ color: '#000000', fontSize: 18, fontFamily: Fonts.rounded }} // picker text
+            onValueChange={(itemValue) => setSelectedItem(itemValue)}
+            mode="dropdown"
+          >
+            {foodOptions.map((food) => (
+              <Picker.Item key={food} label={food} value={food} />
+            ))}
+          </Picker>
+          <Pressable onPress={addBox} style={styles.addTextContainer}>
+            <Text style={styles.addText}>Add</Text>
+          </Pressable>
         </View>
       )}
-
     </ScrollView>
   );
 }
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D1E9F0' 
   },
   scrollContent: { 
-    paddingTop: 80, 
+    paddingTop: 20, 
     paddingHorizontal: 20, 
     paddingBottom: 20 
   },
@@ -146,5 +147,21 @@ const styles = StyleSheet.create({
     width: 16,   
     height: 16,
     borderRadius: 2,
+  },
+  picker: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    marginRight: 10,
+  },
+  addTextContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  addText: {
+    color: '#104911',
+    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: Fonts.rounded,
   },
 });
