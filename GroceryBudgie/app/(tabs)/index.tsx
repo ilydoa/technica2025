@@ -18,10 +18,10 @@ export default function HomeScreen() {
         <TouchableOpacity><Text>Upload Receipt</Text></TouchableOpacity>
         <Text>Going shopping?</Text>
         <View style={styles.container}>
-          <StoreCard storeName="Target" storeLogo={require('./assets/target-logo.png')} price="67.95" />
-          <StoreCard storeName="Wegmans" storeLogo={require('./assets/wegmans-logo.png')} price="80.64" />
+          <StoreCard storeName="Target" storeLogo={require('./assets/target.png')} price="67.95" />
+          <StoreCard storeName="Wegmans" storeLogo={require('./assets/wegmans.png')} price="80.64" />
           <StoreCard storeName="Trader Joe's" storeLogo={require('./assets/trader-joes-logo.png')} price="98.95" />
-          <StoreCard storeName="Harris Teeter" storeLogo={require('./assets/harris-teeter-logo.png')} price="90.64" />
+          <StoreCard storeName="Harris Teeter" storeLogo={require('./assets/harris-teeter.png')} price="90.64" />
         </View>
       </ScrollView>
     </>
