@@ -25,6 +25,20 @@ You will:
 <img width="933" height="405" alt="image" src="https://github.com/user-attachments/assets/d3c1192f-f981-492e-9862-9e60ac77e1f5" />
 <img width="499" height="351" alt="image" src="https://github.com/user-attachments/assets/74fdb7d5-afa1-4035-bfea-8055eb3898ec" />
 
+### App Screens
+
+## Built With
+* React Native
+* Expo
+* Firebase
+* Gemini API
+* Google Vision API
+
+## Team
+* @annagustafson2
+* @ilydoa
+* @tsunami236
+
 
 
 
