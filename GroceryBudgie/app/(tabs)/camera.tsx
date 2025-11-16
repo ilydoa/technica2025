@@ -1,5 +1,5 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { ScrollView, StyleSheet, View, Button, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet, View, Button, Text, Pressable, Alert, ActivityIndicator, TextInput } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { ThemedText } from '@/components/themed-text';
 import { Fonts } from '@/constants/theme';
@@ -8,6 +8,11 @@ import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyCwoPibiynxqXEQKt7BHCqFUfj2m0PF3_M';
+const GOOGLE_API_KEY = "AIzaSyCmbRvEsiNRe9O5PnHb4gI5RNt7EYSElYQ";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+
 
 interface ReceiptItem {
   name: string;
@@ -28,6 +33,7 @@ export default function TabTwoScreen() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [recognizedText, setRecognizedText] = useState('');
   const [parsedReceipt, setParsedReceipt] = useState<ParsedReceipt | null>(null);
+  const [ocrResult, setOCRResult] = useState<string>("");
   const cameraRef = useRef<CameraView>(null);
 
   useEffect(() => {
@@ -37,46 +43,117 @@ export default function TabTwoScreen() {
   }, [permission]);
 
 
-  // THIS IS BROKEN!!!
-  const parseReceiptText = (text: string): ParsedReceipt => {
-  const lines = text
-    .split('\n')
-    .map(l => l.trim())
-    .filter(l => l.length > 0);
+  const extractItemsWithLLM = async (ocrText: string) => {
+  const prompt = `
+From the following receipt text, perform a strict extraction of all individual item names and their final prices.
 
-  const items: ReceiptItem[] = [];
-  let storeName = lines[0];
-  let date = '';
-  let total = 0;
+Follow these strict rules for extraction and formatting:
+1. Extraction Scope: Only extract items that are common food, beverage, or essential grocery products. Exclude services, non-grocery merchandise, and administrative lines (SUBTOTAL, TAX, TEND, PAYMENT METHOD).
+2. Exclusion: Ignore all brand names, product codes (UPC/SKU), weights (e.g., 'lb', 'oz'), unit pricing (e.g., '@ 1 lb /0.78'), store codes, dates, and times.
+3. Item Simplification (Crucial): Simplify every extracted item name to its most common, basic, single- or two-word lowercase form (e.g., 'jasmine rice' → 'rice', 'bone‑in chicken thigh' → 'chicken thigh').
+4. Formatting: Return the list in plain text, with each item on a new line, using the format: \`[simple item name] - $[price]\`.
+5. Final Summary: After the list of items, include a final line: \`total - $[Total Price]\`.
 
-  const dateRegex = /\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/;
-  const priceRegex = /\$?(\d+(\.\d{2})?)/;
+Receipt Text:
+${ocrText}
+`;
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    if (!date) {
-      const d = line.match(dateRegex);
-      if (d) date = d[0];
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: prompt }
+            ]
+          }
+        ],
+        generationConfig: {
+          // you can tweak temperature, max tokens, etc.
+          temperature: 0,
+          responseMimeType: "text/plain"
+        }
+      }),
     }
+  );
 
-    const priceMatch = line.trim().match(priceRegex);
-    if (priceMatch) {
-      const price = parseFloat(priceMatch[1]);
-      const itemName = lines[i-1].trim();
-      items.push({ name: itemName, price });
-    }
-  }
-
-  total = items.reduce((sum, item) => sum + item.price, 0);
-
-  return {
-    items,
-    total,
-    date: date || undefined,
-    storeName: storeName || undefined
-  };
+  const result = await response.json();
+  const text = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  return text;
 };
+
+
+  const parseLLMOutput = (llmText: string): ParsedReceipt => {
+    const lines = llmText.split("\n").map(l => l.trim()).filter(Boolean);
+    const items: ReceiptItem[] = [];
+    let total = 0;
+    let storeName: string | undefined;
+    let date: string | undefined;
+
+    lines.forEach(line => {
+      const match = line.match(/^(.+?)\s*-\s*\$([\d.]+)/);
+      if (match) {
+        const name = match[1];
+        const price = parseFloat(match[2]);
+        if (/total/i.test(name)) {
+          total = price;
+        } else {
+          items.push({ name, price });
+        }
+      } else if (/store:/i.test(line)) {
+        storeName = line.split(":")[1].trim();
+      } else if (/date:/i.test(line)) {
+        date = line.split(":")[1].trim();
+      }
+    });
+
+    if (!total) total = items.reduce((sum, i) => sum + i.price, 0);
+
+    return { items, total, storeName, date };
+  };
+
+
+  const parseReceiptText = (text: string): ParsedReceipt => {
+    const lines = text
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    const items: ReceiptItem[] = [];
+    let storeName = lines[0];
+    let date = '';
+    let total = 0;
+
+    const dateRegex = /\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/;
+    const priceRegex = /\$?(\d+(\.\d{2})?)/;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (!date) {
+        const d = line.match(dateRegex);
+        if (d) date = d[0];
+      }
+
+      const priceMatch = line.trim().match(priceRegex);
+      if (priceMatch) {
+        const price = parseFloat(priceMatch[1]);
+        const itemName = lines[i - 1].trim();
+        items.push({ name: itemName, price });
+      }
+    }
+
+    total = items.reduce((sum, item) => sum + item.price, 0);
+
+    return {
+      items,
+      total,
+      date: date || undefined,
+    };
+  };
 
 
   const processImageForOCR = async (imageUri: string) => {
@@ -150,21 +227,24 @@ export default function TabTwoScreen() {
       return text;
     } catch (error) {
       console.error('Error processing image for OCR:', error);
-      
+
       let errorMessage = 'Failed to process image.';
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      
+
       Alert.alert('Error', errorMessage + ' Please check your API key and try again.');
       return null;
     } finally {
       setIsProcessing(false);
     }
   };
+
+
+
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (status !== 'granted') {
       Alert.alert('Permission needed', 'Please grant permission to access your photos');
       return;
@@ -197,14 +277,30 @@ export default function TabTwoScreen() {
     }
   };
 
+  const handleReceipt = async (imageUri: string) => {
+    const ocrText = await processImageForOCR(imageUri);
+    console.log(ocrText);
+    if (!ocrText) return null;
+    const llmText = await extractItemsWithLLM(ocrText);
+    console.log(llmText)
+    const parsed = parseLLMOutput(llmText);
+    console.log(parsed)
+    setParsedReceipt(parsed);
+    setRecognizedText(ocrText);
+    return parsed;
+  };
+
+
+  // Inside your component (TabTwoScreen)
+
   return (
     <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
-      <ThemedText
-        type="title"
-        style={styles.titleContent}
-      >
+      <ThemedText type="title" style={styles.titleContent}>
         Add Your Receipt
       </ThemedText>
+
+      <Text>Store:</Text>
+      <TextInput style={styles.storeNameTextbox}></TextInput>
 
       {isProcessing && (
         <View style={styles.loadingContainer}>
@@ -213,24 +309,36 @@ export default function TabTwoScreen() {
         </View>
       )}
 
-      <Pressable 
+      {/* Upload Image Button */}
+      <Pressable
         style={styles.openButton}
-        onPress={pickImage}
+        onPress={async () => {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('Permission needed', 'Please grant permission to access your photos');
+            return;
+          }
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+          });
+          if (!result.canceled) {
+            const imageUri = result.assets[0].uri;
+            await handleReceipt(imageUri); // ← CALL handleReceipt HERE
+          }
+        }}
         disabled={isProcessing}
       >
         <AntDesign size={24} name="upload" color="#ffffff" />
         <Text style={styles.buttonText}>Upload Receipt</Text>
       </Pressable>
-      
-      <ThemedText
-        type="title"
-        style={styles.textContent}
-      >
-        OR
-      </ThemedText>
 
+      <ThemedText type="title" style={styles.textContent}>OR</ThemedText>
+
+      {/* Take Photo Button */}
       {!showCamera && (
-        <Pressable 
+        <Pressable
           style={styles.openButton}
           onPress={() => setShowCamera(true)}
           disabled={isProcessing}
@@ -251,41 +359,35 @@ export default function TabTwoScreen() {
             </View>
           ) : (
             <>
-              <CameraView 
-                ref={cameraRef}
-                style={styles.camera}
-                facing="back"
-              />
+              <CameraView ref={cameraRef} style={styles.camera} facing="back" />
               <View style={styles.cameraControls}>
-                <Pressable 
+                <Pressable
                   style={styles.captureButton}
-                  onPress={takePhoto}
+                  onPress={async () => {
+                    if (!cameraRef.current) return;
+                    const photo = await cameraRef.current.takePictureAsync();
+                    setShowCamera(false);
+                    await handleReceipt(photo.uri); // ← CALL handleReceipt HERE
+                  }}
                 >
                   <AntDesign size={32} name="camera" color="#ffffff" />
                 </Pressable>
               </View>
             </>
           )}
-          <Pressable 
-            style={styles.openButton}
-            onPress={() => setShowCamera(false)}
-          >
+          <Pressable style={styles.openButton} onPress={() => setShowCamera(false)}>
             <Text style={styles.buttonText}>Close Camera</Text>
           </Pressable>
         </View>
       )}
 
+      {/* Display Parsed Receipt */}
       {parsedReceipt && (
         <View style={styles.resultContainer}>
           <ThemedText style={styles.resultTitle}>Receipt Details</ThemedText>
-          
-          {parsedReceipt.storeName && (
-            <Text style={styles.storeName}>{parsedReceipt.storeName}</Text>
-          )}
-          
-          {parsedReceipt.date && (
-            <Text style={styles.dateText}>Date: {parsedReceipt.date}</Text>
-          )}
+
+          {parsedReceipt.storeName && <Text style={styles.storeName}>{parsedReceipt.storeName}</Text>}
+          {parsedReceipt.date && <Text style={styles.dateText}>Date: {parsedReceipt.date}</Text>}
 
           <View style={styles.itemsContainer}>
             <Text style={styles.sectionTitle}>Items ({parsedReceipt.items.length}):</Text>
@@ -303,40 +405,37 @@ export default function TabTwoScreen() {
           </View>
 
           {recognizedText && (
-            <Pressable 
-              style={styles.viewRawButton}
-              onPress={() => Alert.alert('Raw Text', recognizedText)}
-            >
+            <Pressable style={styles.viewRawButton} onPress={() => Alert.alert('Raw Text', recognizedText)}>
               <Text style={styles.viewRawText}>View Raw Text</Text>
             </Pressable>
           )}
         </View>
       )}
-      
     </ScrollView>
   );
+
 }
 
 const styles = StyleSheet.create({
-  scrollBackground: { 
-    flex: 1, 
-    backgroundColor: '#D1E9F0' 
+  scrollBackground: {
+    flex: 1,
+    backgroundColor: '#ECF5FD'
   },
-  scrollContent: { 
-    paddingTop: 80, 
-    paddingHorizontal: 20, 
+  scrollContent: {
+    paddingTop: 80,
+    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   titleContent: {
     textAlign: 'center',
-    fontFamily: Fonts.rounded, 
-    color: '#000000', 
+    fontFamily: Fonts.rounded,
+    color: '#000000',
     fontSize: 32,
   },
   textContent: {
     textAlign: 'center',
-    fontFamily: Fonts.rounded, 
-    color: '#000000', 
+    fontFamily: Fonts.rounded,
+    color: '#000000',
     fontSize: 25,
   },
   openButton: {
@@ -490,4 +589,13 @@ const styles = StyleSheet.create({
     color: '#666666',
     textDecorationLine: 'underline',
   },
+  storeNameTextbox: {
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: '#BDE1B4',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ffffff',
+  }
 });
