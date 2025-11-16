@@ -1,31 +1,45 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, Pressable} from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Fonts } from '@/constants/theme';
-
+import { useRouter } from 'expo-router';
 
 export default function StoreDetails() {
   const { storeName } = useLocalSearchParams();
 
-  // Example placeholder data — replace with real data later
   const sampleItems = [
     { item: "Spinach", price: 0.99 },
     { item: "Milk", price: 3.49 },
     { item: "Eggs", price: 2.99 },
   ];
   const storeLogos: Record<string, any> = {
-    Target: require('./assets/target.png'),
-    Wegmans: require('./assets/wegmans.png'),
-    "Trader Joe's": require('./assets/trader-joes-logo.png'),
-    "Harris Teeter": require('./assets/harris-teeter.png'),
+    Target: require('./(tabs)/assets/target.png'),
+    Wegmans: require('./(tabs)/assets/wegmans.png'),
+    "Trader Joe's": require('./(tabs)/assets/trader-joes-logo.png'),
+    "Harris Teeter": require('./(tabs)/assets/harris-teeter.png'),
   };
   const logo = storeLogos[storeName as string];
+  const router = useRouter();
 
   return (
+    <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
+    <Pressable
+            onPress={() => router.back()} 
+            style={{
+              backgroundColor: '#BDE1B4',
+              padding: 10,
+              borderRadius: 8,
+              marginBottom: 20,
+              alignSelf: 'flex-start',
+            }}
+          >
+            <Text style={{ color: '#000', fontWeight: 'bold' }}>← Back</Text>
+          </Pressable>
+
     <View style={styles.container}> 
     {logo && <Image source={logo} style={styles.storeLogo} />}
     <Text style={styles.title}>{storeName}</Text>
     <View style={styles.budgieBubbleRow}>
-        <Image source={require('./assets/budgie.png')} style={styles.logo} />
+        <Image source={require('../assets/images/budgie.png')} style={styles.logo} />
         <View style={styles.bubble}>
           <Text style={styles.bubbleText}>You should buy...</Text>
           <View style={styles.bubbleTail} />
@@ -48,10 +62,13 @@ export default function StoreDetails() {
         ))}
       </View>
     </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollBackground: { flex: 1, backgroundColor: '#D1E9F0' },
+  scrollContent: { paddingTop: 40, paddingHorizontal: 20, paddingBottom: 40 },
   container: {
     flex: 1,
     padding: 20,

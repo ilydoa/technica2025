@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Fonts } from '@/constants/theme';
 import StoreCard from '@/components/store-card';
 import { useRouter } from "expo-router";
+import { ThemedText } from '@/components/themed-text';
 
 
 export default function TabTwoScreen() {
