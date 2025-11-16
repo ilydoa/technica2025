@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View, Pressable, Button, TextInput } from 'react-native';
+import { ScrollView, StyleSheet, View, Pressable, Button, TextInput, Text } from 'react-native';
 import { useState } from 'react';
 import { ThemedText } from '@/components/themed-text';
 import { Fonts } from '@/constants/theme';
@@ -46,8 +46,10 @@ export default function TabTwoScreen() {
       ))}
 
       {!showInput && (
-        <View style={{ marginVertical: 20 }}>
-          <Button title="Add Item" onPress={() => setShowInput(true)} color="#104911" />
+        <View style={styles.addButtonContainer}>
+          <Pressable onPress={() => setShowInput(true)} style={styles.addButton}>
+            <Text style={styles.addButtonText}>+ Add Item</Text>
+          </Pressable>
         </View>
       )}
       
@@ -59,9 +61,12 @@ export default function TabTwoScreen() {
             value={inputText}
             onChangeText={setInputText}
           />
-          <Button title="Add" onPress={addBox} color="#104911" />
+          <View style={styles.addButtonContainer}>
+            <Button title="Add" onPress={addBox} color="#104911" />
+          </View>
         </View>
       )}
+
     </ScrollView>
   );
 }
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 10 
   },
   groceryItemBox: { 
-    backgroundColor: '#A1EEBD', 
+    backgroundColor: '#ECF5FD', 
     borderRadius: 16, 
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
   },
   groceryItemText: { 
     color: '#000000', 
-    fontSize: 25, 
+    fontSize: 20, 
     fontFamily: Fonts.rounded,
     lineHeight: 25,  
   },
@@ -120,11 +125,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
+  addButtonContainer: {
+    marginVertical: 20,
+    alignItems: 'flex-end',
+    borderRadius: 10,
+  },
+  addButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderColor: '#104911',
+    borderWidth: 2,  
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: '#104911',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   checkboxChecked: { 
     width: 16,   
     height: 16,
     borderRadius: 2,
   },
-
 });
