@@ -1,40 +1,47 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { Colors, Fonts } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Text, View, StyleSheet, Image } from "react-native";
+import { useFonts, GamjaFlower_400Regular } from '@expo-google-fonts/gamja-flower';
 
 export function Header() {
-  const colorScheme = useColorScheme();
+
+  const [fontsLoaded] = useFonts({
+    GamjaFlower_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return <View />;
+  }
 
   return (
-    <View style={styles.container}>
-      <Image 
-        source={require('@/assets/images/budgie.png')} 
-        style={styles.icon} 
-        resizeMode="contain"
-      />
-      <Text style={[styles.title]}>
-        Grocery Budgie
-      </Text>
+    <View style={styles.headerContainer}>
+      <Image source={require('./budgie.png')} style={styles.logo} />
+      <Text style={styles.headerText}>Grocery Budgie</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 60,
-    backgroundColor: '#ECF5FD',
+  headerContainer: {
+    width: "100%",
+    paddingTop: 50,        
+    paddingBottom: 10,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    elevation: 4,         
+    shadowColor: "#000",  
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
   },
-  icon: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
+  logo: {
+    width: 32,
+    height: 32,
+    resizeMode: "contain",
   },
-  title: {
-    fontSize: 30,
-    color: '#000000'
+  headerText: {
+    fontFamily: "GamjaFlower_400Regular",
+    fontSize: 28,
   },
 });
+

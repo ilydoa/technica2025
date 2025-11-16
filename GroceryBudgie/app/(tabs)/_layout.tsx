@@ -7,15 +7,20 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+import { Header } from "../../components/header";
+import { View } from "react-native";
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
+    <View style={{flex: 1}}> 
+      <Header />
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          headerShown: false,
+          tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
         name="index"
@@ -39,12 +44,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="goals"
-        options={{
-          title: 'Goals',
-          tabBarIcon: ({ color }) => <AntDesign size={28} name="bar-chart" color={color} />,
-        }}
-      />
-    </Tabs>
+          name="goals"
+          options={{
+            title: 'Goals',
+            tabBarIcon: ({ color }) => <AntDesign size={28} name="bar-chart" color={color} />,
+          }}
+        />
+      </Tabs>
+
+    </View>
+
   );
 }
+
