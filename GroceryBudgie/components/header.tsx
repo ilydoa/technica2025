@@ -22,8 +22,8 @@ export function Header() {
 const styles = StyleSheet.create({
   headerContainer: {
     width: "100%",
-    paddingTop: 50,        
-    paddingBottom: 10,
+    paddingTop: 70,        
+    paddingBottom: 20,
     paddingHorizontal: 16,
     backgroundColor: "#fff",
     flexDirection: "row",
@@ -35,13 +35,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
   logo: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
     resizeMode: "contain",
   },
   headerText: {
     fontFamily: "GamjaFlower_400Regular",
-    fontSize: 28,
+    fontSize: 35,
   },
 });
 
