@@ -1,48 +1,85 @@
-import { ScrollView, StyleSheet, View, Pressable, Button, TextInput } from 'react-native';
+import { ScrollView, StyleSheet, View, Pressable, Button, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { ThemedText } from '@/components/themed-text';
 import { Fonts } from '@/constants/theme';
+import StoreCard from '@/components/store-card';
+import { useRouter } from "expo-router";
 
-const groceryList = [
-  'Apples',
-  'Bananas',
-  'Milk',
-  'Bread',
-  ];
 
 export default function TabTwoScreen() {
+  const router = useRouter();
 
 
   return (
     <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
       <ThemedText
         type="title"
-        style={{ fontFamily: Fonts.rounded, color: '#000000', fontSize: 32 }}
+        style={{ flexDirection: 'row', fontFamily: Fonts.rounded, color: '#000000', fontSize: 20, justifyContent: 'center', textAlign: 'center' }}
       >
-        You should shop at...
+        Which store are you visiting?
       </ThemedText>
-      
-     
-      <Button title="See All Options" color="BDE1B4"/>
-      <Button title="Back to Groceries" color="BDE1B4"/>
+
+      <View style={styles.container}>
+        <View style={styles.cardWrapper}>
+          <TouchableOpacity
+            onPress={() => router.push({
+              pathname: "/storeDetails",
+              params: { storeName: "Target" }
+            })}
+          >
+            <StoreCard storeName="Target" storeLogo={require('./assets/target.png')} price="15.21" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.cardWrapper}>
+          <TouchableOpacity
+            onPress={() => router.push({
+              pathname: "/storeDetails",
+              params: { storeName: "Wegmans" }
+            })}
+          >
+            <StoreCard storeName="Wegmans" storeLogo={require('./assets/wegmans.png')} price="12.89" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.cardWrapper}>
+          <TouchableOpacity
+          onPress={() => router.push({
+              pathname: "/storeDetails",
+              params: { storeName: "Trader Joe's" }
+            })}>
+            <StoreCard storeName="Trader Joe's" storeLogo={require('./assets/trader-joes-logo.png')} price="13.95" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.cardWrapper}>
+          <TouchableOpacity
+          onPress={() => router.push({
+              pathname: "/storeDetails",
+              params: { storeName: "Harris Teeter" }
+            })}>
+            <StoreCard storeName="Harris Teeter" storeLogo={require('./assets/harris-teeter.png')} price="16.64" />
+          </TouchableOpacity>
+        </View>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollBackground: { 
-    flex: 1, 
-    backgroundColor: '#D1E9F0' 
+  scrollBackground: {
+    flex: 1,
+    backgroundColor: '#D1E9F0'
   },
-  scrollContent: { 
-    paddingTop: 80, 
-    paddingHorizontal: 20, 
-    paddingBottom: 20 
+  scrollContent: {
+    paddingTop: 80,
+    paddingHorizontal: 20,
+    paddingBottom: 20
   },
-  inputContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginBottom: 20, 
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
     gap: 10,
   },
   textInput: {
@@ -54,40 +91,50 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.rounded,
     fontSize: 18,
   },
-  boxContainer: { 
+  boxContainer: {
     marginTop: 10,
-    marginBottom: 10 
+    marginBottom: 10
   },
-  groceryItemBox: { 
-    backgroundColor: '#ECF5FD', 
-    borderRadius: 16, 
+  groceryItemBox: {
+    backgroundColor: '#ECF5FD',
+    borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 16,
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     gap: 10,
   },
-  groceryItemText: { 
-    color: '#000000', 
-    fontSize: 25, 
+  groceryItemText: {
+    color: '#000000',
+    fontSize: 25,
     fontFamily: Fonts.rounded,
-    lineHeight: 25,  
+    lineHeight: 25,
   },
-  checkboxContainer: { 
+  checkboxContainer: {
     width: 24,
     height: 24,
-    backgroundColor: '#ffffff',   
+    backgroundColor: '#ffffff',
     borderRadius: 4,
-    borderWidth: 1,               
-    borderColor: '#000000',      
+    borderWidth: 1,
+    borderColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  checkboxChecked: { 
-    width: 16,   
+  checkboxChecked: {
+    width: 16,
     height: 16,
     borderRadius: 2,
+  },
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: 20
+  },
+  cardWrapper: {
+    width: '48%',
+    marginBottom: 16,
   },
 
 });

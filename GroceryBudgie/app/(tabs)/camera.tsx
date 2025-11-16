@@ -123,7 +123,7 @@ ${ocrText}
       .filter(l => l.length > 0);
 
     const items: ReceiptItem[] = [];
-    let storeName = lines[0];
+    //let storeName = lines[0];
     let date = '';
     let total = 0;
 
