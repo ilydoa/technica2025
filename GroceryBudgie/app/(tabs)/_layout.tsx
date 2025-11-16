@@ -50,8 +50,14 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => <AntDesign size={28} name="bar-chart" color={color} />,
           }}
         />
+      <Tabs.Screen
+          name="wheretoshop"
+          options={{
+            title: 'Shops',
+            tabBarIcon: ({ color }) => <AntDesign name="shopping-cart" size={28} color={color} />,
+          }}
+        />
       </Tabs>
-
     </View>
 
   );

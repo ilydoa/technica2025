@@ -3,20 +3,19 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Fonts } from '@/constants/theme';
-import { Header } from '@/components/header';
 import StoreCard from '@/components/store-card';
 
 export default function HomeScreen() {
   return (
     <>
-      <Header />
+     
       <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
         <Text style={styles.textStyle}>You've Saved:</Text>
-        <Text style={styles.dollar}>$</Text>
-        <Text>74</Text>
-        <Text>Went shopping?</Text>
-        <TouchableOpacity><Text>Upload Receipt</Text></TouchableOpacity>
+        <Text style={styles.amount}>$74</Text>
+        <Text>Went shopping? Go to camera and upload the receipt!</Text>
+        <Text></Text>
         <Text>Going shopping?</Text>
+        <Text></Text>
         <View style={styles.container}>
           <StoreCard storeName="Target" storeLogo={require('./assets/target.png')} price="67.95" />
           <StoreCard storeName="Wegmans" storeLogo={require('./assets/wegmans.png')} price="80.64" />
@@ -47,12 +46,17 @@ const styles = StyleSheet.create({
   textStyle: {
     textAlign: 'center'
   },
+  amount: {
+    textAlign: 'center',
+    fontFamily: "GamjaFlower_400Regular",
+    fontSize: 100,
+  },
   dollar: {
     flexDirection: 'row'
   },
   container: {
-    flexDirection: 'row', // Align children in a row
-    flexWrap: 'wrap', // Allow items to wrap into a new row if needed
-    justifyContent: 'space-between', // Add space between the items
+    flexDirection: 'row',
+    flexWrap: 'wrap', 
+    justifyContent: 'space-between', 
   },
 });
