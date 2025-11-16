@@ -3,12 +3,13 @@ import { useState } from 'react';
 import { ThemedText } from '@/components/themed-text';
 import { Fonts } from '@/constants/theme';
 import { Picker } from '@react-native-picker/picker';
+import { useRouter } from 'expo-router';
 
 export default function TabTwoScreen() {
   const [boxes, setBoxes] = useState<string[]>(['Apples', 'Bananas', 'Milk', 'Bread']);
   const [selectedItem, setSelectedItem] = useState<string>('Apples');  
   const [showInput, setShowInput] = useState(false);
-
+  const router = useRouter();
   const removeBox = (index: number) => {
     setBoxes((prev) => prev.filter((_, i) => i !== index));
   };
@@ -68,6 +69,21 @@ export default function TabTwoScreen() {
           </Pressable>
         </View>
       )}
+      <Pressable
+      onPress={() => {
+        router.push('/storeselection');
+      }}
+      style={{
+        backgroundColor: '#BDE1B4',
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 20,
+        alignItems: 'center',
+      }}
+    >
+      <Text style={{ color: '#000', fontWeight: 'bold' }}>Where should I shop?</Text>
+    </Pressable>
+
     </ScrollView>
   );
 }

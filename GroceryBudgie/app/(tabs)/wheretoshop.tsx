@@ -1,6 +1,5 @@
 import { ScrollView, StyleSheet, View, Pressable, Button, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
-import { ThemedText } from '@/components/themed-text';
 import { Fonts } from '@/constants/theme';
 import StoreCard from '@/components/store-card';
 import { useRouter } from "expo-router";
