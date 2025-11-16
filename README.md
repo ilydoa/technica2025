@@ -28,6 +28,13 @@ You will:
 https://www.figma.com/design/lORPhrT5Nar4augalABIzT/Hackathons?node-id=224-1414&p=f&t=oNeLzGm0d8nolStz-0
 
 ### App Screens
+<div style="display: flex; justify-content: space-around;">
+  <img width="786" alt="image" src="https://github.com/user-attachments/assets/be18c020-ec93-44e2-a229-d4ae143099c8" width="15%"/>
+  <img width="772" alt="image" src="https://github.com/user-attachments/assets/597eb28e-7a89-43aa-b497-4dee712c617a" width="15%"/>
+  <img width="780" alt="image" src="https://github.com/user-attachments/assets/de6293c1-011e-49be-90f9-4e2755fa538e" width="15%"/>
+  <img width="772" alt="image" src="https://github.com/user-attachments/assets/58e30b9b-f44c-4f82-a42e-56255b00c45e" width="15%"/>
+  <img width="776" alt="image" src="https://github.com/user-attachments/assets/303dd20b-3b6d-4cdb-8232-83092060d541" width="15%"/>
+</div>
 
 ## Built With
 * React Native
