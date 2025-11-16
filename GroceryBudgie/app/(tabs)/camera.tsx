@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   storeNameTextbox: {
     height: 50,
     borderRadius: 10,
-    backgroundColor: '#BDE1B4',
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
