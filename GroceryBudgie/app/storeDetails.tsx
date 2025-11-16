@@ -6,11 +6,25 @@ import { useRouter } from 'expo-router';
 export default function StoreDetails() {
   const { storeName } = useLocalSearchParams();
 
-  const sampleItems = [
-    { item: "Spinach", price: 0.99 },
-    { item: "Milk", price: 3.49 },
-    { item: "Eggs", price: 2.99 },
-  ];
+  const storeItems: Record<string, { item: string; price: number }[]> = {
+    Target: [
+      { item: "Milk", price: 3.99 },
+      { item: "Bread", price: 2.49 },
+    ],
+    Wegmans: [
+      { item: "Bananas", price: 0.99 },
+    ],
+    "Trader Joe's": [
+      { item: "Apples", price: 3.49 },
+      { item: "Bananas", price: 0.99 },
+    ],
+    "Harris Teeter": [
+      { item: "Bread", price: 2.49 },
+    ],
+  };
+
+  const sampleItems = storeItems[storeName as string] || [];
+
   const storeLogos: Record<string, any> = {
     Target: require('./(tabs)/assets/target.png'),
     Wegmans: require('./(tabs)/assets/wegmans.png'),
