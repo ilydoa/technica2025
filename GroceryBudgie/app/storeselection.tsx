@@ -2,9 +2,11 @@ import { ScrollView, StyleSheet, View, Image, Text, Pressable } from 'react-nati
 import { useState } from 'react';
 import { Fonts } from '@/constants/theme';
 import StoreCard from '@/components/store-card';
+import { useRouter } from 'expo-router';
 
 export default function TabTwoScreen() {
   const groceryItems = ['Apples', 'Bananas', 'Milk', 'Bread'];
+  const router = useRouter(); 
 
   const storePrices: Record<string, Record<string, number>> = {
     Target: { Apples: 4.49, Bananas: 3.99, Milk: 3.25, Bread: 3.48 },
@@ -14,10 +16,10 @@ export default function TabTwoScreen() {
   };
 
   const storeLogos: Record<string, any> = {
-    Target: require('./assets/target.png'),
-    Wegmans: require('./assets/wegmans.png'),
-    "Trader Joe's": require('./assets/trader-joes-logo.png'),
-    "Harris Teeter": require('./assets/harris-teeter.png'),
+    Target: require('./(tabs)/assets/target.png'), //here
+    Wegmans: require('./(tabs)/assets/wegmans.png'),
+    "Trader Joe's": require('./(tabs)/assets/trader-joes-logo.png'),
+    "Harris Teeter": require('./(tabs)/assets/harris-teeter.png'),
   };
 
   const stores = Object.keys(storePrices);
@@ -33,7 +35,71 @@ export default function TabTwoScreen() {
 
   return (
     <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
-      <Text>Here</Text>      
+      <Pressable
+        onPress={() => router.back()} // go back to previous screen
+        style={{
+          backgroundColor: '#BDE1B4',
+          padding: 10,
+          borderRadius: 8,
+          marginBottom: 20,
+          alignSelf: 'flex-start',
+        }}
+      >
+        <Text style={{ color: '#000', fontWeight: 'bold' }}>← Back</Text>
+      </Pressable>
+      
+      <View style={styles.budgieBubbleRow}>
+        <Image source={require('../assets/images/budgie.png')} style={styles.logo} />
+        <View style={styles.bubble}>
+          <Text style={styles.bubbleText}>You should shop at...</Text>
+          <View style={styles.bubbleTail} />
+        </View>
+      </View>
+
+      {displayedStores.map((store) => {
+        const prices = storePrices[store];
+        const total = Object.values(prices).reduce((sum, price) => sum + price, 0);
+        return (
+          <View key={store} style={styles.storeSection}>
+            <StoreCard
+              storeName={store}
+              storeLogo={storeLogos[store]}
+              price={total.toFixed(2)}
+            />
+            <View style={styles.table}>
+              <Text style={styles.tableTitle}>Items at {store}</Text>
+              {groceryItems.map((item) => (
+                <View key={item} style={styles.row}>
+                  <Text style={styles.cell}>{item}</Text>
+                  <Text style={styles.cell}>${prices[item].toFixed(2)}</Text>
+                </View>
+              ))}
+              <View style={styles.totalRow}>
+                <Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>
+              </View>
+            </View>
+          </View>
+        );
+      })}
+
+      <View style={{ marginTop: 10, alignItems: 'center' }}>
+        <Pressable
+          onPress={() => setShowAll(!showAll)}
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed ? '#a0d7a0' : '#BDE1B4',
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 10,
+            },
+          ]}
+        >
+          <Text style={{ fontFamily: Fonts.rounded, fontSize: 16, color: '#000', textAlign: 'center' }}>
+            {showAll ? "Show Only Lowest Price" : "Show All Stores"}
+          </Text>
+        </Pressable>
+      </View>
+      
     </ScrollView>
   );
 }

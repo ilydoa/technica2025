@@ -21,6 +21,7 @@ export default function TabLayout() {
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           headerShown: false,
           tabBarButton: HapticTab,
+          tabBarStyle: { justifyContent: 'space-around'},
       }}>
       <Tabs.Screen
         name="index"
@@ -55,6 +56,13 @@ export default function TabLayout() {
           options={{
             title: 'Shops',
             tabBarIcon: ({ color }) => <AntDesign name="shopping-cart" size={28} color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="storeselection"
+          options={{
+            title: 'storeselection',
+            tabBarButton: () => null,
           }}
         />
       </Tabs>
