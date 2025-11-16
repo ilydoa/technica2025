@@ -12,15 +12,26 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
         <Text style={styles.textStyle}>You've Saved:</Text>
         <Text style={styles.amount}>$74</Text>
-        <Text>Went shopping? Go to camera and upload the receipt!</Text>
+        <Text style={styles.textStyle}>Went shopping? Go to camera and upload the receipt!</Text>
         <Text></Text>
-        <Text>Going shopping?</Text>
+        <Text style={styles.textStyle}>Going shopping? </Text>
         <Text></Text>
         <View style={styles.container}>
-          <StoreCard storeName="Target" storeLogo={require('./assets/target.png')} price="67.95" />
-          <StoreCard storeName="Wegmans" storeLogo={require('./assets/wegmans.png')} price="80.64" />
-          <StoreCard storeName="Trader Joe's" storeLogo={require('./assets/trader-joes-logo.png')} price="98.95" />
-          <StoreCard storeName="Harris Teeter" storeLogo={require('./assets/harris-teeter.png')} price="90.64" />
+          <View style={styles.cardWrapper}>
+            <StoreCard storeName="Target" storeLogo={require('./assets/target.png')} price="15.21" />
+          </View>
+
+          <View style={styles.cardWrapper}>
+            <StoreCard storeName="Wegmans" storeLogo={require('./assets/wegmans.png')} price="12.89" />
+          </View>
+
+          <View style={styles.cardWrapper}>
+            <StoreCard storeName="Trader Joe's" storeLogo={require('./assets/trader-joes-logo.png')} price="13.95" />
+          </View>
+
+          <View style={styles.cardWrapper}>
+            <StoreCard storeName="Harris Teeter" storeLogo={require('./assets/harris-teeter.png')} price="16.64" />
+          </View>
         </View>
       </ScrollView>
     </>
@@ -44,7 +55,9 @@ const styles = StyleSheet.create({
     color: '#0000000'
   },
   textStyle: {
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 20, 
+    fontFamily: Fonts.rounded,
   },
   amount: {
     textAlign: 'center',
@@ -58,5 +71,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap', 
     justifyContent: 'space-between', 
+  },
+  cardWrapper: {
+    width: '48%',   
+    marginBottom: 16,  
   },
 });
