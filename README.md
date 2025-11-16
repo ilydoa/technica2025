@@ -21,11 +21,11 @@ You will:
 ![Untitled (Draft)](https://github.com/user-attachments/assets/18d83791-7640-46c2-94ea-6211628f70f6)
 
 ### High Fidelity Figma Designs
-![https://www.figma.com/design/lORPhrT5Nar4augalABIzT/Hackathons?node-id=224-1414&p=f&t=oNeLzGm0d8nolStz-0]
 <img width="846" height="479" alt="image" src="https://github.com/user-attachments/assets/b20620f8-63f3-4de6-be2f-514a20f10cd9" />
 <img width="933" height="405" alt="image" src="https://github.com/user-attachments/assets/d3c1192f-f981-492e-9862-9e60ac77e1f5" />
 <img width="499" height="351" alt="image" src="https://github.com/user-attachments/assets/74fdb7d5-afa1-4035-bfea-8055eb3898ec" />
 
+![Figma](https://www.figma.com/design/lORPhrT5Nar4augalABIzT/Hackathons?node-id=224-1414&p=f&t=oNeLzGm0d8nolStz-0)
 ### App Screens
 
 ## Built With
