@@ -16,7 +16,7 @@ export default function TabTwoScreen() {
   };
 
   const storeLogos: Record<string, any> = {
-    Target: require('./(tabs)/assets/target.png'), //here
+    Target: require('./(tabs)/assets/target.png'),
     Wegmans: require('./(tabs)/assets/wegmans.png'),
     "Trader Joe's": require('./(tabs)/assets/trader-joes-logo.png'),
     "Harris Teeter": require('./(tabs)/assets/harris-teeter.png'),
@@ -36,7 +36,7 @@ export default function TabTwoScreen() {
   return (
     <ScrollView style={styles.scrollBackground} contentContainerStyle={styles.scrollContent}>
       <Pressable
-        onPress={() => router.back()} // go back to previous screen
+        onPress={() => router.back()} 
         style={{
           backgroundColor: '#BDE1B4',
           padding: 10,
