@@ -82,7 +82,7 @@ export default function TabTwoScreen() {
           ]}
         >
           <Text style={{ fontFamily: Fonts.rounded, fontSize: 16, color: '#000', textAlign: 'center' }}>
-            {showAll ? "Show Only Lowest Store" : "Show All Stores"}
+            {showAll ? "Show Only Lowest Price" : "Show All Stores"}
           </Text>
         </Pressable>
       </View>
