@@ -7,16 +7,12 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-<<<<<<< Updated upstream
-const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyCwoPibiynxqXEQKt7BHCqFUfj2m0PF3_M';
-=======
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyDaJbARSSwW4wVtw2T5WTEGbz2GPiyX89s';
 const GOOGLE_API_KEY = "AIzaSyCmbRvEsiNRe9O5PnHb4gI5RNt7EYSElYQ";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
 
->>>>>>> Stashed changes
 
 interface ReceiptItem {
   name: string;
